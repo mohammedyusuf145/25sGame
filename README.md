@@ -7,9 +7,7 @@ The game ships **without any questions**. You write them all in the built-in edi
 
 ## How to use
 
-1. **Open** `tahaddi25.html`.
-   - **One screen** (laptop on the projector): just play. Press `H` to peek at the answer panel.
-   - **Two screens**: click **Open display window** and drag the new window onto the projector, then click it once to enable sound and fullscreen. The first window becomes the **Host** panel with the answers. Sound plays on the display only.
+1. **Open** `tahaddi25.html`. Everything runs on **one screen**: the board, the timer, the correct answer with its note (side panel), and the live score in the top bar. Settings is the gear icon at the top. Click anywhere once to enable sound.
 2. **Add questions**: open **Question editor**. Pick a slot (Q1–Q18, 3 reserves, the Fast Decider) and write the question, four options and the correct letter. A badge on each slot shows *Empty*, *Incomplete* or *Ready*, plus a counter like "12/18 ready". Everything autosaves.
    - Use multiple **sets** (e.g. "Prep stage", "Ramadan"): new, rename, duplicate, delete.
    - **Export/Import JSON** to back up or share a set (same shape as `QUESTIONS_DATA` at the top of the file).
@@ -31,7 +29,6 @@ The game ships **without any questions**. You write them all in the built-in edi
 | `R` | Swap with a reserve question |
 | `F` | Fullscreen |
 | `M` | Mute |
-| `H` | Answer panel (single-screen mode) |
 | `?` | Help |
 
 ## Notes
@@ -43,5 +40,4 @@ The game ships **without any questions**. You write them all in the built-in edi
 ## Hosting on Vercel
 
 `vercel.json` serves the game at the site root (`/` → `tahaddi25.html`). In Vercel use **Framework Preset: Other**, leave **Build Command** and **Output Directory** empty, then redeploy.
-- Projector: `https://<your-site>.vercel.app/#display`
-- Host panel: `https://<your-site>.vercel.app/#host`
+- Questions are saved per site: questions written in the local file won't appear on Vercel. Move them with **Download JSON** → **Import JSON** in the editor.

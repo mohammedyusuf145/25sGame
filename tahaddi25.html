@@ -545,6 +545,11 @@ html.rm .screen.enter{animation:fadeIn .2s both!important;animation-duration:200
 
 
 /* ---------- late additions ---------- */
+.bar-scores{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-inline:auto}
+.bar-brand:has(+ .bar-scores){margin-inline-end:0}
+.bar-score{display:inline-flex;align-items:center;gap:.5rem;padding:.2rem .7rem;border-radius:6px;background:var(--paper);background-image:var(--paper-grain);color:var(--ink);font-weight:800;border-inline-start:5px solid var(--team);max-width:42vw}
+.bar-score .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.92rem}
+.bar-score b{font-family:var(--num);font-stretch:condensed;font-size:1.35rem;color:var(--team);line-height:1}
 .tile .pts{isolation:isolate}
 .logo-ring{animation:drain 9s linear infinite}
 @keyframes drain{from{stroke-dashoffset:0}to{stroke-dashoffset:100}}
@@ -777,7 +782,7 @@ const I18N = {
       'بعد كل سؤال ينتقل الاختيار إلى الفريق الآخر. عند التعادل في النهاية يُطرح السؤال الحاسم.'
     ],
     keysTitle: 'اختصارات لوحة المفاتيح',
-    keys: [['A–D / 1–4','تثبيت الخيار'],['Space','ابدأ / إيقاف / استئناف'],['Enter','اكشف أو انتقل للخطوة التالية'],['Z','تراجع'],['R','بدّل باحتياطي'],['F','ملء الشاشة'],['M','كتم الصوت'],['H','لوحة الإجابات (شاشة واحدة)'],['?','المساعدة']],
+    keys: [['A–D / 1–4','تثبيت الخيار'],['Space','ابدأ / إيقاف / استئناف'],['Enter','اكشف أو انتقل للخطوة التالية'],['Z','تراجع'],['R','بدّل باحتياطي'],['F','ملء الشاشة'],['M','كتم الصوت'],['?','المساعدة']],
     unlockTitle: 'شاشة العرض جاهزة', unlockBody: 'اضغط لتفعيل الصوت وملء الشاشة. ستُعرض المباراة هنا تلقائياً.', unlockBtn: 'فعّل الصوت وملء الشاشة',
     standby: 'بانتظار بدء المباراة', setupLive: 'تشكيل الفريقين', vs: 'ضد',
     srTimer: 'باقي {n} ثانية', srScore: '{team}: {n} نقطة', srTurn: 'الدور على {team}',
@@ -860,7 +865,7 @@ const I18N = {
       'After each question the pick passes to the other team. A tie at the end goes to the Fast Decider.'
     ],
     keysTitle: 'Keyboard shortcuts',
-    keys: [['A–D / 1–4','Lock option'],['Space','Start / pause / resume'],['Enter','Reveal or next step'],['Z','Undo'],['R','Swap with reserve'],['F','Fullscreen'],['M','Mute'],['H','Answer panel (single screen)'],['?','Help']],
+    keys: [['A–D / 1–4','Lock option'],['Space','Start / pause / resume'],['Enter','Reveal or next step'],['Z','Undo'],['R','Swap with reserve'],['F','Fullscreen'],['M','Mute'],['?','Help']],
     unlockTitle: 'Display is ready', unlockBody: 'Click to enable sound and fullscreen. The match will appear here automatically.', unlockBtn: 'Enable sound and fullscreen',
     standby: 'Waiting for the match to start', setupLive: 'Team line-up', vs: 'vs',
     srTimer: '{n} seconds left', srScore: '{team}: {n} points', srTurn: "{team}'s turn",
@@ -928,6 +933,7 @@ const ICONS = {
   eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
   check: '<path d="M4.5 12.5l4.8 4.8L19.5 7"/>',
   x: '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+  gear: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/>',
   compass: '<circle cx="12" cy="4.8" r="1.8"/><path d="M11 6.4L5.5 20.5M13 6.4l5.5 14.1M7.6 15h8.8"/>',
   help: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.4c-.7.3-1 .8-1 1.6v.4"/><path d="M12 17.2v.1"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
@@ -1166,7 +1172,6 @@ function reduce(m0, a) {
     case 'T_START': {
       if (ph !== PH.QREADY && ph !== PH.SREADY) return fail('phase');
       if (c.timer.running) return fail('running');            // guard: never start twice
-      if (c.q.empty) return fail('empty');
       c.timer.base = c.timer.dur; c.timer.startedAt = at; c.timer.running = true;
       m.phase = ph === PH.QREADY ? PH.DISC : PH.SDISC; emit(m, 'tstart', {}, at); return { m, ok: true };
     }
@@ -1331,7 +1336,8 @@ const UNDOABLE = new Set(['BEGIN', 'PICK', 'T_START', 'LOCK', 'REVEAL', 'TO_STEA
 /* =====================================================================
    APP RUNTIME (mode, undo stack, dispatch)
    ===================================================================== */
-const MODE = (() => { const h = (location.hash || '').replace('#', '').toLowerCase(); return h === 'host' || h === 'display' ? h : 'single'; })();
+// Single screen only: host controls, answer panel and the stage live together on one screen.
+const MODE = 'single';
 const IS_DISPLAY = MODE === 'display';
 const App = {
   match: null, undo: [], lastFx: 0, view: IS_DISPLAY ? 'stage' : 'home',
@@ -1342,7 +1348,7 @@ function displayConnected() { return now() - App.displaySeen < 5500; }
 /* Audio routing: the Display (room speakers) always plays. Host/single plays only
    when no Display is connected or when the host explicitly turns "host audio" on —
    so sounds are never doubled by accident. */
-function audioHere() { return IS_DISPLAY || SETTINGS.hostAudio || !displayConnected(); }
+function audioHere() { return true; }
 
 function dispatch(type, payload = {}) {
   if (IS_DISPLAY) return false;
@@ -1509,7 +1515,11 @@ const Audio = (() => {
     const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
     ctx = new AC();
     comp = ctx.createDynamicsCompressor(); comp.threshold.value = -16; comp.knee.value = 12; comp.ratio.value = 4; comp.attack.value = 0.004; comp.release.value = 0.22;
-    master = ctx.createGain(); master.connect(comp); comp.connect(ctx.destination);
+    // master → compressor → make-up gain → brick-wall limiter → speakers (louder without clipping)
+    master = ctx.createGain(); master.connect(comp);
+    const makeup = ctx.createGain(); makeup.gain.value = 2.4;
+    const limiter = ctx.createDynamicsCompressor(); limiter.threshold.value = -3; limiter.knee.value = 0; limiter.ratio.value = 20; limiter.attack.value = 0.001; limiter.release.value = 0.12;
+    comp.connect(makeup); makeup.connect(limiter); limiter.connect(ctx.destination);
     sfxBus = ctx.createGain(); sfxBus.connect(master);
     musicBus = ctx.createGain(); musicDuck = ctx.createGain(); musicBus.connect(musicDuck); musicDuck.connect(master);
     const conv = ctx.createConvolver(); conv.buffer = impulse(1.9, 2.8);
@@ -1653,7 +1663,7 @@ const Audio = (() => {
 
   function duck() { if (!ctx || !Music.on) return; const T = ctx.currentTime; musicDuck.gain.cancelScheduledValues(T); musicDuck.gain.setTargetAtTime(0.3, T, 0.03); musicDuck.gain.setTargetAtTime(1, T + 0.5, 0.35); }
   function play(name, arg) {
-    if (!ctx || !audioHere() || SETTINGS.muted) return;
+    if (!ctx || SETTINGS.muted) return;
     if (ctx.state !== 'running') { ctx.resume(); }
     if (SETTINGS.reduceSfx && name === 'hover') return;
     if (name !== 'tick' && name !== 'hover' && name !== 'count' && name !== 'tickfast') duck();
@@ -1695,11 +1705,15 @@ const Audio = (() => {
   }
   return {
     customKeys: [],
-    unlock() { const fresh = !ctx; if (!init()) return; if (ctx.state !== 'running') ctx.resume(); if (fresh) { syncMusic(); if (App.view === 'home' || (IS_DISPLAY && !App.match)) setTimeout(() => play('intro'), 80); } },
+    unlock() {
+      // iPhone/iPad: play through the silent switch, and start a silent buffer inside the tap (required by Safari)
+      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+      const fresh = !ctx; if (!init()) return; if (ctx.state !== 'running') ctx.resume();
+      if (fresh) { try { const b = ctx.createBuffer(1, 1, 22050), s = ctx.createBufferSource(); s.buffer = b; s.connect(ctx.destination); s.start(0); } catch (e) {} } if (fresh) { syncMusic(); if (App.view === 'home' || (IS_DISPLAY && !App.match)) setTimeout(() => play('intro'), 80); } },
     get ready() { return !!ctx && ctx.state === 'running'; },
     play, applyVolumes, syncMusic, setOverride, clearOverride,
     test(name) { init(); if (ctx.state !== 'running') ctx.resume(); if (name === 'music') { if (Music.on) Music.stop(); else { Music.start(); setTimeout(() => { if (screenOf(App.match) !== 'board' || App.view !== 'stage') Music.stop(); }, 6000); } return; }
-      const save = SETTINGS.hostAudio; SETTINGS.hostAudio = true; const arg = { heartbeat: { n: 3 }, final3: { n: 1 }, count: { i: 3 } }[name]; play(name, arg); SETTINGS.hostAudio = save; }
+      const arg = { heartbeat: { n: 3 }, final3: { n: 1 }, count: { i: 3 } }[name]; play(name, arg); }
   };
 })();
 
@@ -1730,18 +1744,15 @@ function render() {
 /* ---------- top bar (host / single) ---------- */
 function renderBar() {
   if (IS_DISPLAY) return;
-  const modeLbl = MODE === 'host' ? t('modeHost') : t('modeSingle');
-  const conn = displayConnected();
+  const m = App.match;
+  const score = m && m.phase !== PH.SETUP ? `<span class="bar-scores">${[0, 1].map(i => `<span class="bar-score" style="--team:${teamColor(m, i)}"><span class="nm">${esc(teamName(m, i))}</span><b class="num">${N(m.teams[i].score)}</b></span>`).join('')}</span>` : '';
   $('#bar').innerHTML = `
     <button class="bar-brand" data-act="home" aria-label="${esc(t('home'))}">${logoSVG('logo', false)}<span>${esc(t('appName'))}</span></button>
-    <span class="chip hide-sm">${ic('monitor')} ${esc(modeLbl)}</span>
-    <span class="chip ${conn ? 'ok' : ''} hide-sm" id="syncChip"><i class="dot"></i>${esc(conn ? t('displayOn') : t('displayOff'))}</span>
-    ${MODE !== 'host' || !conn ? `<button class="tbtn" data-act="open-display">${ic('monitor')}<span class="hide-sm">${esc(t('openDisplay'))}</span></button>` : ''}
-    ${MODE === 'single' && App.view === 'stage' ? `<button class="ibtn" data-act="toggle-panel" aria-pressed="${!b().classList.contains('panel-closed')}" data-tip="${esc(t('panel'))} (H)" aria-label="${esc(t('panel'))}">${ic('panel')}</button>` : ''}
+    ${score}
     <button class="tbtn" data-act="lang" aria-label="Language">${ic('globe')}<span>${esc(t('lang'))}</span></button>
     <button class="ibtn" data-act="mute" aria-pressed="${SETTINGS.muted}" data-tip="${esc(SETTINGS.muted ? t('unmute') : t('mute'))} (M)" aria-label="${esc(t('mute'))}">${ic(SETTINGS.muted ? 'mute' : 'speaker')}</button>
     <button class="ibtn" data-act="fullscreen" data-tip="${esc(t('fullscreen'))} (F)" aria-label="${esc(t('fullscreen'))}">${ic('full')}</button>
-    <button class="ibtn" data-act="settings" data-tip="${esc(t('settings'))}" aria-label="${esc(t('settings'))}">${ic('compass')}</button>
+    <button class="ibtn" data-act="settings" data-tip="${esc(t('settings'))}" aria-label="${esc(t('settings'))}">${ic('gear')}</button>
     <button class="ibtn" data-act="help" data-tip="${esc(t('help'))} (?)" aria-label="${esc(t('help'))}">${ic('help')}</button>`;
 }
 const b = () => document.body;
@@ -1993,7 +2004,7 @@ function renderCtrl() {
     case PH.SETUP: h = cbtn('teams', 'users', t('teamsTitle'), 'primary'); break;
     case PH.BOARD: h = `<span class="ctrl-hint">${ic('pencil')} ${esc(t('turnOf'))}: <b style="color:${teamColor(m, m.turn)};filter:brightness(1.6)">${esc(teamName(m, m.turn))}</b></span>` + cbtn('end', 'flag', t('endMatch')); break;
     case PH.QREADY: case PH.SREADY:
-      h = c.q.empty ? `<span class="ctrl-hint">${ic('warn')} ${esc(t('qNotAddedHost'))}</span>${cbtn('swap', 'swap', t('swapReserve'), 'primary', 'R')}${cbtn('skip', 'skip', t('skip'))}`
+      h = c.q.empty ? cbtn('tstart', 'play', t('start') + (ph === PH.SREADY ? ' (10)' : ' (25)'), 'primary', 'Space', 'data-primary') + `<span class="ctrl-hint">${ic('warn')} ${esc(t('qNotAddedHost'))}</span>${ph === PH.QREADY ? cbtn('swap', 'swap', t('swapReserve'), '', 'R') + cbtn('skip', 'skip', t('skip')) : ''}`
         : cbtn('tstart', 'play', t('start') + (ph === PH.SREADY ? ' (10)' : ' (25)'), 'primary', 'Space', 'data-primary') + `<span class="ctrl-hint">${esc(t('lockHint'))}</span>` + (ph === PH.QREADY ? cbtn('swap', 'swap', t('swapReserve'), '', 'R') + cbtn('skip', 'skip', t('skip')) : '');
       break;
     case PH.DISC: case PH.SDISC:
@@ -2049,8 +2060,6 @@ function renderPanel() {
     <button class="pbtn" data-act="end" ${ph === PH.BOARD ? '' : 'disabled'}>${ic('flag')}${esc(t('endMatch'))}</button>
     <button class="pbtn" data-act="restart-confirm">${ic('reset')}${esc(t('restart'))}</button>
   </div><p class="pmuted" style="margin-top:.5rem">${esc(t('reserveLeft', { n: left }))}</p></div>`;
-  h += `<div class="pcard"><div class="row" style="padding:0;border:0;min-height:0"><span>${esc(t('hostAudio'))}<small>${esc(t('hostAudioHint'))}</small></span>
-    <button class="switch" role="switch" aria-checked="${SETTINGS.hostAudio}" data-act="setting" data-k="hostAudio" aria-label="${esc(t('hostAudio'))}"></button></div></div>`;
   const log = m.rounds.slice().reverse().map(r => `<li><b>Q${N(r.tile)}</b> ${esc(catName(m, r.col))}: <span style="color:${teamColor(m, r.team)}">${esc(r.student || teamName(m, r.team))}</span> ${esc(outcomeLabel(r.outcome))} ${r.points ? `(${r.points > 0 ? '+' : ''}${N(r.points)})` : ''}${r.steal ? `, ${esc(t('steal'))}: <span style="color:${teamColor(m, r.steal.team)}">${esc(outcomeLabel(r.steal.outcome))}${r.steal.points ? ' +' + N(r.steal.points) : ''}</span>` : ''}</li>`).join('');
   h += `<div class="pcard"><h4>${ic('clipboard')}${esc(t('roundLog'))}</h4>${log ? `<ul class="log">${log}</ul>` : `<p class="pmuted">${esc(t('noRounds'))}</p>`}</div>`;
   el.innerHTML = h;
@@ -2172,10 +2181,6 @@ function homeHTML() {
       ${logoSVG('logo', true)}
       <h1>${esc(I18N.ar.appName)}<small>TAHADDI 25</small></h1>
       <p>${esc(t('tagline'))}</p>
-      <div class="mode-row">
-        <span class="chip">${ic('monitor')} ${esc(MODE === 'host' ? t('modeHost') : t('modeSingle'))}</span>
-        ${MODE === 'host' ? `<button class="tbtn" data-act="mode-single">${ic('monitor')} ${esc(t('modeSingle'))}</button>` : `<button class="tbtn" data-act="open-display" title="${esc(t('openDisplayHint'))}">${ic('monitor')} ${esc(t('openDisplay'))}</button>`}
-      </div>
     </div>
     <nav class="menu" aria-label="Menu">
       ${item('new', 'flag', t('newMatch'), t('newMatchSub'), 'main', false, 0)}
@@ -2375,7 +2380,7 @@ function settingsHTML() {
       </section>
       <section class="sheet-card"><h2>${ic('speaker')}${esc(t('setAudio'))}</h2>
         ${range('master', t('sMaster'))}${range('music', t('sMusic'))}${range('sfx', t('sSfx'))}
-        ${sw('muted', t('sMute'))}${sw('reduceSfx', t('sReduce'), t('sReduceHint'))}${sw('hostAudio', t('hostAudio'), t('hostAudioHint'))}
+        ${sw('muted', t('sMute'))}${sw('reduceSfx', t('sReduce'), t('sReduceHint'))}
       </section>
       <section class="sheet-card"><h2>${ic('ruler')}${esc(t('setGame'))}</h2>
         ${sw('negative', t('sNeg'), t('sNegHint'))}${sw('shuffle', t('sShuffle'), t('sShuffleHint'))}
@@ -2516,7 +2521,7 @@ async function beginMatch() {
 function timerToggle() {
   const m = App.match; if (!m || !m.cur) return;
   const ph = m.phase;
-  if (ph === PH.QREADY || ph === PH.SREADY) { if (!m.cur.q.empty) dispatch('T_START'); }
+  if (ph === PH.QREADY || ph === PH.SREADY) dispatch('T_START');
   else if (ph === PH.DISC || ph === PH.SDISC) dispatch(m.cur.timer.running ? 'T_PAUSE' : 'T_RESUME');
 }
 function cycleStudent(side) {
@@ -2680,7 +2685,7 @@ document.addEventListener('keydown', e => {
    BOOT
    ===================================================================== */
 function boot() {
-  document.body.className = 'mode-' + MODE + (MODE === 'single' ? ' panel-closed' : '');
+  document.body.className = 'mode-' + MODE;
   applySettings();
   App.match = store.get(CONFIG.KEYS.match, null);
   if (App.match && (!App.match.teams || !App.match.phase)) App.match = null;
@@ -2693,8 +2698,7 @@ function boot() {
   if (!IS_DISPLAY) setInterval(() => Timer.watchdog(), 200);
   setInterval(() => { if (IS_DISPLAY) renderSyncChip(); else { const c = $('#syncChip'); if (c && c.classList.contains('ok') !== displayConnected()) { renderBar(); Audio.syncMusic(); } } }, 1500);
   const unlock = () => Audio.unlock();
-  window.addEventListener('pointerdown', unlock, { capture: true });
-  window.addEventListener('keydown', unlock, { capture: true });
+  ['pointerdown', 'touchend', 'click', 'keydown'].forEach(ev => window.addEventListener(ev, unlock, { capture: true }));
   let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(fitQuestion, 120); });
   if (window.matchMedia) matchMedia('(prefers-reduced-motion: reduce)').addEventListener?.('change', applySettings);
   if (IS_DISPLAY) {
