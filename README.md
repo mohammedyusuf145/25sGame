@@ -39,3 +39,9 @@ The game ships **without any questions**. You write them all in the built-in edi
 - Your data lives in this browser's local storage: question sets, teams, the match in progress and settings. Use **Settings → Export all data** for a backup.
 - Settings cover Arabic/English, Arabic-Indic or Western numerals, Dark Stage for bright rooms, reduce motion, volume sliders (master, music, effects), Reduce sound effects, negative points, option shuffle and number of rounds.
 - **Custom sounds**: in Settings → Test sounds you can upload your own audio for any sound event. Reset returns it to the built-in synthesised sound.
+
+## Hosting on Vercel
+
+`vercel.json` serves the game at the site root (`/` → `tahaddi25.html`). In Vercel use **Framework Preset: Other**, leave **Build Command** and **Output Directory** empty, then redeploy.
+- Projector: `https://<your-site>.vercel.app/#display`
+- Host panel: `https://<your-site>.vercel.app/#host`
