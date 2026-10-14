@@ -376,6 +376,16 @@ body.mode-display .answerer .cyc{display:none}
 #panel{grid-area:panel;overflow:auto;background:#17100a;border-inline-start:1px solid #2a1c10;padding:.8rem;display:flex;flex-direction:column;gap:.8rem}
 .sheet-card,.pcard,.dialog,.sel{color-scheme:light}
 .pcard{background:var(--paper);background-image:var(--paper-grain);color:var(--ink);border-radius:4px;padding:.75rem .85rem;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.pcard-h{display:flex;align-items:center;justify-content:space-between;gap:.5rem;width:100%;min-height:40px;margin:-.2rem 0 0;padding:0;border:0;background:none;color:var(--ink);font-weight:800;font-size:.95rem;text-align:start}
+.pcard-h>span{display:flex;align-items:center;gap:.4rem}
+.pcard-h .chev{transition:transform var(--t-mid) var(--ease)}
+.pcard.folded .pcard-h .chev{transform:rotate(-90deg)}
+[dir=rtl] .pcard.folded .pcard-h .chev{transform:rotate(90deg)}
+.pcard.folded{padding-block:.45rem}
+.pcard-b{margin-top:.35rem}
+.q-note{display:flex;align-items:flex-start;gap:.6em;background:var(--paper);background-image:var(--paper-grain);color:var(--ink);font-weight:700;font-size:calc(var(--u)*1.55);line-height:1.5;padding:calc(var(--u)*.7) calc(var(--u)*1.2);border-inline-start:calc(var(--u)*.6) solid var(--hi);box-shadow:0 calc(var(--u)*.3) calc(var(--u)*.7) rgba(0,0,0,.35);transform:rotate(.3deg)}
+.q-note .i{width:1.2em;height:1.2em;flex:none;margin-top:.15em;color:var(--ink-2)}
+.q-note.anim{animation:rise .45s var(--ease) .35s both}
 .pcard h4{margin:0 0 .5rem;font-size:.95rem;display:flex;align-items:center;gap:.4rem;color:var(--ink)}
 .pcard p{margin:.25rem 0;font-size:.92rem}
 .ans-btn{width:100%;min-height:52px;font-size:1rem;background:var(--hi);border-color:#c9a91f}
@@ -658,6 +668,7 @@ html.rm .logo-ring{animation:none}
   .opt .txt,.opt.mid .txt,.opt.long .txt{font-size:1rem}
   .opt .state{font-size:.72rem}
   .opt .state .i{width:16px;height:16px}
+  .q-note{font-size:.95rem;padding:8px 12px;border-inline-start-width:5px}
   .stamp{position:static;align-self:center;font-size:1.5rem;margin:0 auto 10px;padding:4px 14px;border-width:4px}
   .banner,.sheet .banner{position:static;width:100%;margin-top:12px;font-size:.95rem;padding:8px 12px;gap:8px}
   .banner .i{width:22px;height:22px}
@@ -832,7 +843,7 @@ const I18N = {
     modeSingle: 'شاشة واحدة', modeHost: 'شاشة المقدم', modeDisplay: 'شاشة العرض',
     openDisplay: 'افتح شاشة العرض', openDisplayHint: 'افتح نافذة العرض على البروجكتر وستتحول هذه النافذة إلى لوحة المقدم.',
     synced: 'متزامن', waitingHost: 'بانتظار المقدم', displayOn: 'شاشة العرض متصلة', displayOff: 'لا توجد شاشة عرض',
-    home: 'الرئيسية', help: 'المساعدة', fullscreen: 'ملء الشاشة', mute: 'كتم الصوت', unmute: 'تشغيل الصوت', lang: 'English', panel: 'لوحة الإجابات',
+    home: 'الرئيسية', help: 'المساعدة', fullscreen: 'ملء الشاشة', mute: 'كتم الصوت', unmute: 'تشغيل الصوت', lang: 'English', panel: 'إظهار/إخفاء لوحة المقدم',
     teamsTitle: 'الفريقان والطلاب', teamA: 'الفريق الأزرق', teamB: 'الفريق الأحمر', teamName: 'اسم الفريق', motto: 'شعار الفريق (اختياري)', color: 'لون الفريق',
     students: 'الطلاب', addStudent: 'أضف طالباً', studentN: 'طالب {n}', pasteList: 'الصق قائمة', pasteHint: 'اسم واحد في كل سطر (حتى ١٠ طلاب)',
     captain: 'القائد', makeCaptain: 'اجعله القائد', remove: 'حذف', rosterEmpty: 'بدون طلاب؟ لا مشكلة، اللعب يكون على مستوى الفريق.',
@@ -899,7 +910,7 @@ const I18N = {
       'بعد كل سؤال ينتقل الاختيار إلى الفريق الآخر. عند التعادل في النهاية يُطرح السؤال الحاسم.'
     ],
     keysTitle: 'اختصارات لوحة المفاتيح',
-    keys: [['A–D / 1–4','تثبيت الخيار'],['Space','ابدأ / إيقاف / استئناف'],['Enter','اكشف أو انتقل للخطوة التالية'],['Z','تراجع'],['R','بدّل باحتياطي'],['F','ملء الشاشة'],['M','كتم الصوت'],['?','المساعدة']],
+    keys: [['A–D / 1–4','تثبيت الخيار'],['Space','ابدأ / إيقاف / استئناف'],['Enter','اكشف أو انتقل للخطوة التالية'],['Z','تراجع'],['R','بدّل باحتياطي'],['F','ملء الشاشة'],['M','كتم الصوت'],['H','إظهار/إخفاء لوحة المقدم'],['?','المساعدة']],
     unlockTitle: 'شاشة العرض جاهزة', unlockBody: 'اضغط لتفعيل الصوت وملء الشاشة. ستُعرض المباراة هنا تلقائياً.', unlockBtn: 'فعّل الصوت وملء الشاشة',
     standby: 'بانتظار بدء المباراة', setupLive: 'تشكيل الفريقين', vs: 'ضد',
     srTimer: 'باقي {n} ثانية', srScore: '{team}: {n} نقطة', srTurn: 'الدور على {team}',
@@ -916,7 +927,7 @@ const I18N = {
     modeSingle: 'Single screen', modeHost: 'Host screen', modeDisplay: 'Display screen',
     openDisplay: 'Open display window', openDisplayHint: 'Opens the projector view in a new window and turns this one into the host panel.',
     synced: 'Synced', waitingHost: 'Waiting for host', displayOn: 'Display connected', displayOff: 'No display open',
-    home: 'Home', help: 'Help', fullscreen: 'Fullscreen', mute: 'Mute', unmute: 'Unmute', lang: 'عربي', panel: 'Answer panel',
+    home: 'Home', help: 'Help', fullscreen: 'Fullscreen', mute: 'Mute', unmute: 'Unmute', lang: 'عربي', panel: 'Show/hide host panel',
     teamsTitle: 'Teams and students', teamA: 'Blue Team', teamB: 'Red Team', teamName: 'Team name', motto: 'Team motto (optional)', color: 'Team colour',
     students: 'Students', addStudent: 'Add student', studentN: 'Student {n}', pasteList: 'Paste a list', pasteHint: 'One name per line (up to 10)',
     captain: 'Captain', makeCaptain: 'Make captain', remove: 'Remove', rosterEmpty: 'No students? Fine — the team plays as one.',
@@ -983,7 +994,7 @@ const I18N = {
       'After each question the pick passes to the other team. A tie at the end goes to the Fast Decider.'
     ],
     keysTitle: 'Keyboard shortcuts',
-    keys: [['A–D / 1–4','Lock option'],['Space','Start / pause / resume'],['Enter','Reveal or next step'],['Z','Undo'],['R','Swap with reserve'],['F','Fullscreen'],['M','Mute'],['?','Help']],
+    keys: [['A–D / 1–4','Lock option'],['Space','Start / pause / resume'],['Enter','Reveal or next step'],['Z','Undo'],['R','Swap with reserve'],['F','Fullscreen'],['M','Mute'],['H','Show/hide host panel'],['?','Help']],
     unlockTitle: 'Display is ready', unlockBody: 'Click to enable sound and fullscreen. The match will appear here automatically.', unlockBtn: 'Enable sound and fullscreen',
     standby: 'Waiting for the match to start', setupLive: 'Team line-up', vs: 'vs',
     srTimer: '{n} seconds left', srScore: '{team}: {n} points', srTurn: "{team}'s turn",
@@ -1051,6 +1062,7 @@ const ICONS = {
   eye: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
   check: '<path d="M4.5 12.5l4.8 4.8L19.5 7"/>',
   x: '<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+  chev: '<path d="M6 9.5l6 6 6-6"/>',
   gear: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/><circle cx="12" cy="12" r="6.6"/>',
   compass: '<circle cx="12" cy="4.8" r="1.8"/><path d="M11 6.4L5.5 20.5M13 6.4l5.5 14.1M7.6 15h8.8"/>',
   help: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.4c-.7.3-1 .8-1 1.6v.4"/><path d="M12 17.2v.1"/>',
@@ -1460,7 +1472,7 @@ const IS_DISPLAY = MODE === 'display';
 const App = {
   match: null, undo: [], lastFx: 0, view: IS_DISPLAY ? 'stage' : 'home',
   displaySeen: 0, hostSeen: 0, lastSeq: 0, renderKey: '', prevMatch: null,
-  ed: { sel: null }, coinShownAt: 0, busy: {}
+  ed: { sel: null }, coinShownAt: 0, busy: {}, fold: store.get('t25:fold', {}) || {}
 };
 function displayConnected() { return now() - App.displaySeen < 5500; }
 /* Audio routing: the Display (room speakers) always plays. Host/single plays only
@@ -1867,6 +1879,7 @@ function renderBar() {
   $('#bar').innerHTML = `
     <button class="bar-brand" data-act="home" aria-label="${esc(t('home'))}">${logoSVG('logo', false)}<span>${esc(t('appName'))}</span></button>
     ${score}
+    ${App.view === 'stage' ? `<button class="ibtn" data-act="toggle-panel" aria-pressed="${!document.body.classList.contains('panel-closed')}" data-tip="${esc(t('panel'))} (H)" aria-label="${esc(t('panel'))}">${ic('panel')}</button>` : ''}
     <button class="tbtn" data-act="lang" aria-label="Language">${ic('globe')}<span>${esc(t('lang'))}</span></button>
     <button class="ibtn" data-act="mute" aria-pressed="${SETTINGS.muted}" data-tip="${esc(SETTINGS.muted ? t('unmute') : t('mute'))} (M)" aria-label="${esc(t('mute'))}">${ic(SETTINGS.muted ? 'mute' : 'speaker')}</button>
     <button class="ibtn" data-act="fullscreen" data-tip="${esc(t('fullscreen'))} (F)" aria-label="${esc(t('fullscreen'))}">${ic('full')}</button>
@@ -2042,6 +2055,7 @@ function questionHTML(m) {
         <div class="sheet"><span class="qno">${esc(c.source.startsWith('R') ? t('reserveQ', { n: c.source.slice(1) }) : 'Q' + N(tile.n))}</span>
           <div class="q-text ${c.q.empty && !text ? 'empty' : ''}" id="qtext">${c.q.empty && !text ? esc(t('qNotAdded')) : esc(text)}</div>${banner}</div>
         <div class="opts">${opts}</div>
+        ${c.showCorrect && (c.q.note || '').trim() ? `<div class="q-note ${fx.has('correct') || fx.has('stealok') || fx.has('stealfail') ? 'anim' : ''}">${ic('book')}<span>${esc(c.q.note)}</span></div>` : ''}
       </div>
       <div class="q-side">
         <button class="answerer" style="--team:${teamColor(m, team)}" ${canCycle ? `data-act="cycle-student" data-side="${steal ? 'steal' : 'main'}" aria-label="${esc(t('nextStudent'))}"` : 'disabled'}>
@@ -2147,6 +2161,11 @@ function renderCtrl() {
 }
 
 /* ---------- host side panel (answer key etc. — never on the Display) ---------- */
+/* Each host-panel card folds open/closed on its header; the choice is remembered. */
+function pcard(id, icon, title, body) {
+  const open = !App.fold[id];
+  return `<div class="pcard ${open ? '' : 'folded'}"><button class="pcard-h" data-act="fold" data-card="${id}" aria-expanded="${open}"><span>${ic(icon)}${esc(title)}</span>${ic('chev', 'chev')}</button>${open ? `<div class="pcard-b">${body}</div>` : ''}</div>`;
+}
 function renderPanel() {
   if (IS_DISPLAY) return;
   const m = App.match, el = $('#panel');
@@ -2155,38 +2174,37 @@ function renderPanel() {
   let h = '';
   if (c) {
     const corr = c.q.options.find(o => o.k === c.q.correct);
-    // The answer (and its note) stay hidden until the host taps "Show answer";
-    // they open by themselves once the answer is revealed on stage.
+    // The answer stays hidden until the host taps "Show answer" (or it is revealed on stage).
+    // The host note appears only once the correct answer is revealed.
     const ansKey = m.id + '|' + c.tile + '|' + c.source;
     const shown = App.ansKey === ansKey || c.showCorrect;
-    h += `<div class="pcard"><h4>${ic('eye')}${esc(t('correctAnswer'))}</h4>
-      ${c.q.empty ? `<p class="err">${ic('warn')}${esc(t('qNotAdded'))}</p><p class="pmuted">${esc(t('qNotAddedHost'))}</p>`
-        : shown ? `<div class="key-ans"><span class="let num">${c.q.correct}</span><span>${esc(corr ? corr.text : '')}</span></div>
-      <p class="pmuted" style="margin-top:.5rem"><b>${esc(t('note'))}:</b> ${esc(c.q.note || t('noNote'))}</p>
-      ${c.showCorrect ? '' : `<button class="pbtn wide" style="width:100%;margin-top:.5rem" data-act="toggle-ans" data-key="${esc(ansKey)}">${ic('x')}${esc(t('hideAns'))}</button>`}`
-        : `<button class="pbtn wide ans-btn" data-act="toggle-ans" data-key="${esc(ansKey)}">${ic('eye')}${esc(t('showAns'))}</button><p class="pmuted" style="margin-top:.45rem">${esc(t('ansHidden'))}</p>`}</div>`;
+    const body = c.q.empty ? `<p class="err">${ic('warn')}${esc(t('qNotAdded'))}</p><p class="pmuted">${esc(t('qNotAddedHost'))}</p>`
+      : shown ? `<div class="key-ans"><span class="let num">${c.q.correct}</span><span>${esc(corr ? corr.text : '')}</span></div>
+        ${c.showCorrect ? `<p class="pmuted" style="margin-top:.5rem"><b>${esc(t('note'))}:</b> ${esc(c.q.note || t('noNote'))}</p>` : `<button class="pbtn wide" style="width:100%;margin-top:.5rem" data-act="toggle-ans" data-key="${esc(ansKey)}">${ic('x')}${esc(t('hideAns'))}</button>`}`
+      : `<button class="pbtn wide ans-btn" data-act="toggle-ans" data-key="${esc(ansKey)}">${ic('eye')}${esc(t('showAns'))}</button><p class="pmuted" style="margin-top:.45rem">${esc(t('ansHidden'))}</p>`;
+    h += pcard('ans', 'eye', t('correctAnswer'), body);
     const side = STEAL_PHASES.includes(ph) ? 'steal' : 'main', team = side === 'steal' ? c.stealTeam : c.team;
     const sid = side === 'steal' ? c.stealStudent : c.student;
     const editable = side === 'steal' ? [PH.SREADY, PH.SDISC, PH.STUP, PH.SLOCKED].includes(ph) : PRE_ANSWER.includes(ph);
     if (m.teams[team].students.length) {
-      h += `<div class="pcard"><h4>${ic('pencil')}${esc(side === 'steal' ? t('stealStudent') : t('answeringStudent'))}</h4>
+      h += pcard('student', 'pencil', side === 'steal' ? t('stealStudent') : t('answeringStudent'), `
         <select class="sel" data-act="pick-student" data-side="${side}" ${editable ? '' : 'disabled'} aria-label="${esc(t('answeringStudent'))}">
           <option value="">${esc(t('teamOnly'))}</option>
           ${m.teams[team].students.map(s => `<option value="${s.id}" ${s.id === sid ? 'selected' : ''}>${esc(s.name || '—')}${m.teams[team].captain === s.id ? ' ★' : ''}</option>`).join('')}
-        </select></div>`;
+        </select>`);
     }
   }
   const left = m.reserve ? m.reserve.filter((q, i) => !m.reserveUsed[i]).length : 0;
-  h += `<div class="pcard"><h4>${ic('ruler')}${esc(t('hostPanel'))}</h4><div class="pgrid">
+  h += pcard('host', 'ruler', t('hostPanel'), `<div class="pgrid">
     <button class="pbtn" data-act="swap" ${c && PRE_ANSWER.includes(ph) && left ? '' : 'disabled'}>${ic('swap')}${esc(t('swapReserve'))}</button>
     <button class="pbtn" data-act="skip" ${c && PRE_ANSWER.includes(ph) ? '' : 'disabled'}>${ic('skip')}${esc(t('skip'))}</button>
     <button class="pbtn" data-act="undo" ${App.undo.length ? '' : 'disabled'}>${ic('undo')}${esc(t('undo'))}</button>
     <button class="pbtn" data-act="adjust" ${ph === PH.SETUP ? 'disabled' : ''}>${ic('pencil')}${esc(t('adjust'))}</button>
     <button class="pbtn" data-act="end" ${ph === PH.BOARD ? '' : 'disabled'}>${ic('flag')}${esc(t('endMatch'))}</button>
     <button class="pbtn" data-act="restart-confirm">${ic('reset')}${esc(t('restart'))}</button>
-  </div><p class="pmuted" style="margin-top:.5rem">${esc(t('reserveLeft', { n: left }))}</p></div>`;
+  </div><p class="pmuted" style="margin-top:.5rem">${esc(t('reserveLeft', { n: left }))}</p>`);
   const log = m.rounds.slice().reverse().map(r => `<li><b>Q${N(r.tile)}</b> ${esc(catName(m, r.col))}: <span style="color:${teamColor(m, r.team)}">${esc(r.student || teamName(m, r.team))}</span> ${esc(outcomeLabel(r.outcome))} ${r.points ? `(${r.points > 0 ? '+' : ''}${N(r.points)})` : ''}${r.steal ? `, ${esc(t('steal'))}: <span style="color:${teamColor(m, r.steal.team)}">${esc(outcomeLabel(r.steal.outcome))}${r.steal.points ? ' +' + N(r.steal.points) : ''}</span>` : ''}</li>`).join('');
-  h += `<div class="pcard"><h4>${ic('clipboard')}${esc(t('roundLog'))}</h4>${log ? `<ul class="log">${log}</ul>` : `<p class="pmuted">${esc(t('noRounds'))}</p>`}</div>`;
+  h += pcard('log', 'clipboard', t('roundLog'), log ? `<ul class="log">${log}</ul>` : `<p class="pmuted">${esc(t('noRounds'))}</p>`);
   el.innerHTML = h;
 }
 
@@ -2687,7 +2705,8 @@ const ACTIONS = {
   home: () => go('home'), new: newMatch, resume: () => { if (App.match) go(App.match.phase === PH.SETUP ? 'teams' : 'stage'); }, teams: () => go('teams'),
   editor: () => { if (!App.ed.sel) App.ed.sel = 'q:0'; go('editor'); }, settings: () => go('settings'), help: showHelp,
   'open-display': openDisplay, 'mode-single': () => { location.hash = ''; location.reload(); },
-  'toggle-panel': () => { document.body.classList.toggle('panel-closed'); renderBar(); },
+  'toggle-panel': () => { document.body.classList.toggle('panel-closed'); store.set('t25:panelClosed', document.body.classList.contains('panel-closed')); renderBar(); },
+  fold: el => { const id = el.dataset.card; App.fold[id] = !App.fold[id]; store.set('t25:fold', App.fold); renderPanel(); const b = $(`#panel [data-card="${id}"]`); b && b.focus(); },
   lang: () => setSetting('lang', SETTINGS.lang === 'ar' ? 'en' : 'ar'),
   mute: () => { setSetting('muted', !SETTINGS.muted); },
   fullscreen: toggleFullscreen,
@@ -2804,14 +2823,14 @@ document.addEventListener('keydown', e => {
   if (code === 'Enter' || code === 'NumpadEnter') { const p = $('#ctrl [data-primary]'); if (p && !p.disabled) { e.preventDefault(); p.click(); } return; }
   if (code === 'KeyZ') { undo(); return; }
   if (code === 'KeyR' && m && m.cur) { dispatch('SWAP'); return; }
-  if (code === 'KeyH' && MODE === 'single') { ACTIONS['toggle-panel'](); return; }
+  if (code === 'KeyH') { ACTIONS['toggle-panel'](); return; }
 });
 
 /* =====================================================================
    BOOT
    ===================================================================== */
 function boot() {
-  document.body.className = 'mode-' + MODE;
+  document.body.className = 'mode-' + MODE + (store.get('t25:panelClosed', false) ? ' panel-closed' : '');
   applySettings();
   App.match = store.get(CONFIG.KEYS.match, null);
   if (App.match && (!App.match.teams || !App.match.phase)) App.match = null;
