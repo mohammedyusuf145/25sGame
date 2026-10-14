@@ -378,6 +378,7 @@ body.mode-display .answerer .cyc{display:none}
 .pcard{background:var(--paper);background-image:var(--paper-grain);color:var(--ink);border-radius:4px;padding:.75rem .85rem;box-shadow:0 2px 6px rgba(0,0,0,.35)}
 .pcard h4{margin:0 0 .5rem;font-size:.95rem;display:flex;align-items:center;gap:.4rem;color:var(--ink)}
 .pcard p{margin:.25rem 0;font-size:.92rem}
+.ans-btn{width:100%;min-height:52px;font-size:1rem;background:var(--hi);border-color:#c9a91f}
 .key-ans{display:flex;align-items:center;gap:.6rem;font-size:1.1rem;font-weight:800;background:var(--ok-l);border-inline-start:6px solid var(--ok);padding:.5rem .6rem}
 .key-ans .let{font-family:var(--num);font-size:1.8rem;color:var(--ok)}
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
@@ -566,7 +567,11 @@ html.rm .logo-ring{animation:none}
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width:900px){
-  body.mode-host #shell,body.mode-single #shell{grid-template:"bar" auto "stage" auto "ctrl" auto "panel" 1fr/1fr;overflow:auto;height:auto;min-height:100dvh}
+  body.mode-host #shell,body.mode-single #shell{grid-template:"bar" auto "stage" auto "ctrl" auto "panel" 1fr/1fr;overflow:visible;height:auto;min-height:100dvh}
+  body.page-view #shell{grid-template:"bar" auto "page" 1fr/1fr}
+  #page{overflow:visible}
+  #ctrl{position:sticky;bottom:0;z-index:30;box-shadow:0 -8px 18px rgba(0,0,0,.45)}
+  #edForm{position:static!important}
   body{overflow:auto}
   body.mode-single.panel-closed #shell{grid-template-columns:1fr}
   #stageWrap{container-type:inline-size}
@@ -581,6 +586,117 @@ html.rm .logo-ring{animation:none}
 @media (max-width:520px){
   .ed-cats,.ed-grid,.ed-extra{grid-template-columns:repeat(2,minmax(0,1fr))}
   .chip.hide-sm{display:none}
+}
+
+
+/* ---------- PHONES: the stage re-flows instead of shrinking a 16:9 picture ---------- */
+@media (max-width:640px){
+  #bar{padding:6px 8px;gap:6px}
+  .ibtn{width:38px;height:38px}
+  .tbtn{height:38px;padding:0 .6rem}
+  .bar-brand,.bar-brand:has(+ .bar-scores){margin-inline-end:auto}
+  .bar-scores{order:5;width:100%;justify-content:center;margin:2px 0 0}
+  .bar-score{max-width:48%}
+  #stageWrap{padding:6px}
+  .frame{aspect-ratio:auto;height:auto;padding:6px;border-radius:8px}
+  .frame::after,.tray{display:none}
+  .stage{height:auto;container-type:inline-size}
+  .screen{position:relative;inset:auto;min-height:56vh;padding:12px 10px 14px;--u:calc(1cqw * 1.45)}
+  #ctrl{padding:8px;gap:6px}
+  .cbtn{padding:0 .7rem;font-size:.92rem;min-height:48px}
+  .cbtn kbd{display:none}
+  .ctrl-hint{width:100%;text-align:center;font-size:.8rem}
+  .ctrl-sep{display:none}
+  /* scoreboard */
+  .scorebar{gap:8px;margin-bottom:10px}
+  .plate{padding:6px 8px;gap:6px;border-inline-start-width:5px}
+  .plate-name{font-size:.8rem}
+  .plate-motto{display:none}
+  .plate-score{font-size:1.6rem}
+  .plate .pin{width:12px;height:12px;top:-5px}
+  .plate .turn-mark{height:5px;bottom:-8px}
+  .center-badge .logo{width:26px}
+  .counter{font-size:.8rem}
+  .turnline{font-size:.85rem;margin-bottom:12px;flex-wrap:wrap;min-height:0}
+  .turnline .who .i{width:14px;height:14px}
+  /* board: one row per category, three tiles across */
+  .board{grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:minmax(54px,auto);gap:8px}
+  .cat{grid-column:1;grid-row:calc(var(--c) + 1);align-items:flex-start;justify-content:center;padding:0}
+  .cat-name{font-size:.8rem;min-height:0;justify-content:flex-start;text-align:start;align-items:center}
+  .cat .scribble{width:90%;height:6px;margin-top:2px}
+  .tile{grid-column:calc(var(--l) + 1);grid-row:calc(var(--c) + 1);min-height:54px}
+  .tile .pts{font-size:1.55rem}
+  .tile .qn{display:none}
+  .tile .tape{width:30px;height:10px;top:-5px}
+  .tile .won,.tile .empty-dot{font-size:.6rem}
+  /* question */
+  .q-head{gap:8px;margin-bottom:10px}
+  .label{font-size:.9rem;padding:4px 10px}
+  .label .tape{width:26px;height:10px;top:-5px;inset-inline-start:-6px}
+  .lvl{font-size:.75rem}
+  .lvl b{width:9px;height:9px}
+  .pts-tag{font-size:.8rem}
+  .pts-tag .num{font-size:1.3rem}
+  .steal-tag{font-size:.75rem}
+  .q-body{display:flex;flex-direction:column;gap:12px}
+  .q-side{order:-1;flex-direction:row;align-items:center;gap:12px}
+  .answerer{flex:1;padding:8px 10px;min-width:0}
+  .answerer .t{font-size:.72rem}
+  .answerer .s{font-size:1rem}
+  .answerer .star,.answerer .cyc{width:18px;height:18px}
+  .timer{width:112px;flex:none}
+  .timer .val{font-size:2.6rem}
+  .timer .sub,.timer .pause-badge{font-size:.65rem}
+  .timer.zero .val{font-size:.9rem}
+  .sheet{flex:none;min-height:120px;padding:16px 14px 16px 44px;flex-direction:column;justify-content:center;transform:none}
+  [dir=rtl] .sheet{padding:16px 44px 16px 14px}
+  .sheet .qno{font-size:.85rem;top:8px;inset-inline-start:8px}
+  .q-text{font-size:1.35rem}
+  .opts{grid-template-columns:1fr;gap:8px}
+  .opt{min-height:52px;padding:8px 12px;gap:10px}
+  .opt .let{width:34px;height:34px;font-size:1.25rem}
+  .opt .txt,.opt.mid .txt,.opt.long .txt{font-size:1rem}
+  .opt .state{font-size:.72rem}
+  .opt .state .i{width:16px;height:16px}
+  .stamp{position:static;align-self:center;font-size:1.5rem;margin:0 auto 10px;padding:4px 14px;border-width:4px}
+  .banner,.sheet .banner{position:static;width:100%;margin-top:12px;font-size:.95rem;padding:8px 12px;gap:8px}
+  .banner .i{width:22px;height:22px}
+  .sb-float{font-size:1.4rem}
+  /* fast decider */
+  .tb-screen{gap:12px}
+  .tb-title{font-size:1.5rem}
+  .tb-sub{font-size:.85rem}
+  .tb-screen .sheet{width:100%}
+  .tb-teams{flex-wrap:wrap;justify-content:center;gap:10px;width:100%}
+  .tb-team{min-width:0;flex:1 1 140px;font-size:1rem;padding:8px 10px}
+  .tb-team .st{font-size:.75rem}
+  .tb-answer{font-size:1.1rem}
+  /* winner */
+  .win-top{gap:12px;flex-wrap:wrap;justify-content:center}
+  .trophy{width:64px;height:64px}
+  .win-kicker{font-size:.85rem}
+  .win-name{font-size:1.7rem;text-decoration-thickness:4px;text-underline-offset:6px}
+  .win-scores{gap:10px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+  .win-cols{grid-template-columns:1fr;gap:12px}
+  .win-card{font-size:.85rem;padding:10px 12px}
+  .win-card h3{font-size:1rem}
+  /* standby */
+  .standby .logo{width:120px}
+  .title-ar{font-size:2.2rem}
+  .title-en{font-size:1rem}
+  .standby p{font-size:.9rem}
+  /* pages */
+  .page-title{font-size:1.5rem}
+  .sheet-card{padding:14px}
+  .home{padding:18px 14px}
+}
+
+
+/* ---------- short screens (phone in landscape): keep the control bar to one compact row ---------- */
+@media (max-height:520px) and (max-width:1000px){
+  #ctrl{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding:6px 8px;min-height:0;gap:6px}
+  #ctrl .cbtn{flex:0 0 auto;min-height:42px;padding:0 .75rem;font-size:.88rem}
+  #ctrl .cbtn kbd,#ctrl .ctrl-hint,#ctrl .ctrl-sep{display:none}
 }
 
 /* ---------- PRINT ---------- */
@@ -733,6 +849,7 @@ const I18N = {
     answered: '{name} أجاب إجابة صحيحة!', answeredWrong: 'إجابة {name} غير صحيحة', timeUpRes: 'انتهى وقت {name}',
     stealOk: '{name} خطف النقاط!', stealFail: 'لم ينجح الخطف، لا أحد يحصل على النقاط', lateRes: 'إجابة {name} جاءت بعد انتهاء الوقت',
     teamWord: 'فريق {team}',
+    showAns: 'إظهار الإجابة', hideAns: 'إخفاء الإجابة', ansHidden: 'الإجابة مخفية. اضغط لما تبغى تشوفها.',
     hostPanel: 'لوحة المقدم', correctAnswer: 'الإجابة الصحيحة', note: 'ملاحظة', noNote: 'لا توجد ملاحظة',
     swapReserve: 'بدّل باحتياطي', skip: 'تخطَّ السؤال', undo: 'تراجع', adjust: 'تعديل النقاط', endMatch: 'إنهاء المباراة', restart: 'إعادة المباراة',
     answeringStudent: 'الطالب المجيب', stealStudent: 'طالب الخطف', teamOnly: 'الفريق كاملاً', nextStudent: 'الطالب التالي',
@@ -816,6 +933,7 @@ const I18N = {
     answered: '{name} answered correctly!', answeredWrong: "{name}'s answer is wrong", timeUpRes: "{name} ran out of time",
     stealOk: '{name} stole the points!', stealFail: 'Steal missed — nobody scores', lateRes: "{name}'s answer came after time",
     teamWord: '{team}',
+    showAns: 'Show answer', hideAns: 'Hide answer', ansHidden: 'The answer is hidden. Tap when you want to see it.',
     hostPanel: 'Host panel', correctAnswer: 'Correct answer', note: 'Note', noNote: 'No note',
     swapReserve: 'Swap with reserve', skip: 'Skip question', undo: 'Undo', adjust: 'Adjust scores', endMatch: 'End match', restart: 'Restart match',
     answeringStudent: 'Answering student', stealStudent: 'Steal student', teamOnly: 'Whole team', nextStudent: 'Next student',
@@ -1851,12 +1969,12 @@ function coinHTML(m) {
 function boardHTML(m) {
   const fresh = App.fxList || [];
   const burnFresh = new Set(fresh.filter(f => f.type === 'burn').map(f => f.data.tile));
-  const cats = m.cats.map((c, i) => `<div class="cat"><div class="cat-name">${esc(catName(m, i))}</div>${DECO.scribble(i)}</div>`).join('');
+  const cats = m.cats.map((c, i) => `<div class="cat" style="--c:${i}"><div class="cat-name">${esc(catName(m, i))}</div>${DECO.scribble(i)}</div>`).join('');
   const tiles = m.tiles.map((tl, i) => {
     const pts = Rules.points(tl.level);
     const empty = !IS_DISPLAY && qStatus(m.qs[tl.qi]) !== 'ready';
     const label = `${catName(m, tl.col)}, ${pts} ${t('pts')}, Q${tl.n}`;
-    return `<button class="tile ${tl.used ? 'used' : ''}" data-tile="${i}" style="--rot:${hashRot(i)}deg;--tape-rot:${hashRot(i + 7, 5)}deg;--i:${i};${tl.by != null ? `--team:${teamColor(m, tl.by)}` : ''}" ${tl.used || IS_DISPLAY ? 'disabled' : ''} aria-label="${esc(label)}">
+    return `<button class="tile ${tl.used ? 'used' : ''}" data-tile="${i}" style="--c:${tl.col};--l:${tl.level};--rot:${hashRot(i)}deg;--tape-rot:${hashRot(i + 7, 5)}deg;--i:${i};${tl.by != null ? `--team:${teamColor(m, tl.by)}` : ''}" ${tl.used || IS_DISPLAY ? 'disabled' : ''} aria-label="${esc(label)}">
       ${DECO.tape()}<span class="card"><span class="qn">Q${N(tl.n)}</span><span class="pts">${DECO.hl()}${N(pts)}</span>${empty && !tl.used ? `<span class="empty-dot">${esc(t('edEmpty'))}</span>` : ''}</span>
       ${tl.used ? DECO.burn(burnFresh.has(i)) + (tl.by != null ? `<span class="won"><i></i>${esc(teamName(m, tl.by))}</span>` : '') : ''}
     </button>`;
@@ -2037,9 +2155,16 @@ function renderPanel() {
   let h = '';
   if (c) {
     const corr = c.q.options.find(o => o.k === c.q.correct);
+    // The answer (and its note) stay hidden until the host taps "Show answer";
+    // they open by themselves once the answer is revealed on stage.
+    const ansKey = m.id + '|' + c.tile + '|' + c.source;
+    const shown = App.ansKey === ansKey || c.showCorrect;
     h += `<div class="pcard"><h4>${ic('eye')}${esc(t('correctAnswer'))}</h4>
-      ${c.q.empty ? `<p class="err">${ic('warn')}${esc(t('qNotAdded'))}</p><p class="pmuted">${esc(t('qNotAddedHost'))}</p>` : `<div class="key-ans"><span class="let num">${c.q.correct}</span><span>${esc(corr ? corr.text : '')}</span></div>`}
-      <p class="pmuted" style="margin-top:.5rem"><b>${esc(t('note'))}:</b> ${esc(c.q.note || t('noNote'))}</p></div>`;
+      ${c.q.empty ? `<p class="err">${ic('warn')}${esc(t('qNotAdded'))}</p><p class="pmuted">${esc(t('qNotAddedHost'))}</p>`
+        : shown ? `<div class="key-ans"><span class="let num">${c.q.correct}</span><span>${esc(corr ? corr.text : '')}</span></div>
+      <p class="pmuted" style="margin-top:.5rem"><b>${esc(t('note'))}:</b> ${esc(c.q.note || t('noNote'))}</p>
+      ${c.showCorrect ? '' : `<button class="pbtn wide" style="width:100%;margin-top:.5rem" data-act="toggle-ans" data-key="${esc(ansKey)}">${ic('x')}${esc(t('hideAns'))}</button>`}`
+        : `<button class="pbtn wide ans-btn" data-act="toggle-ans" data-key="${esc(ansKey)}">${ic('eye')}${esc(t('showAns'))}</button><p class="pmuted" style="margin-top:.45rem">${esc(t('ansHidden'))}</p>`}</div>`;
     const side = STEAL_PHASES.includes(ph) ? 'steal' : 'main', team = side === 'steal' ? c.stealTeam : c.team;
     const sid = side === 'steal' ? c.stealStudent : c.student;
     const editable = side === 'steal' ? [PH.SREADY, PH.SDISC, PH.STUP, PH.SLOCKED].includes(ph) : PRE_ANSWER.includes(ph);
@@ -2575,6 +2700,7 @@ const ACTIONS = {
   'restart-confirm': async () => { const ok = await ask(t('restart'), t('confirmRestart'), [{ label: t('cancel'), value: false }, { label: t('restart'), value: true, cls: 'ink' }], 'reset'); if (ok) { dispatch('RESTART'); go('teams'); } },
   restart: () => { dispatch('RESTART'); go('teams'); },
   'cycle-student': el => cycleStudent(el.dataset.side),
+  'toggle-ans': el => { App.ansKey = App.ansKey === el.dataset.key ? null : el.dataset.key; renderPanel(); },
   tbhand: el => dispatch('TB_HAND', { team: +el.dataset.team }), tbjudge: el => dispatch('TB_JUDGE', { correct: el.dataset.ok === '1' }),
   tbreveal: () => dispatch('TB_REVEAL'), tbdeclare: el => dispatch('TB_DECLARE', { winner: el.dataset.w === 'draw' ? 'draw' : +el.dataset.w }),
   'export-results': () => { download(`tahaddi25-results-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(resultsJSON(), null, 2)); toast(t('exportedRes')); },
